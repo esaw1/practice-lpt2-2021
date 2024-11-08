@@ -1,0 +1,77 @@
+
+C:/Repos/cpen211/practice-lpt2-2021/q1.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+}
+*/
+
+.global _start
+_start:
+    MOV R0, #1 // i=1
+   0:	e3a00001 	mov	r0, #1
+    MOV R1, #2 // j=2
+   4:	e3a01002 	mov	r1, #2
+    MOV R2, #1 // k=1
+   8:	e3a02001 	mov	r2, #1
+    LDR R3, =data // set base of A = first address of array “data”
+   c:	e59f3054 	ldr	r3, [pc, #84]	; 68 <data+0x10>
+BL func
+  10:	eb000000 	bl	18 <func>
+
+00000014 <END>:
+END: B END // infinite loop; R0 should contain return value of func
+  14:	eafffffe 	b	14 <END>
+
+00000018 <func>:
+.global func
+func:
+    CMP R0, R1
+  18:	e1500001 	cmp	r0, r1
+    BGE ge_ij
+  1c:	aa000001 	bge	28 <ge_ij>
+    MOV R4, #1
+  20:	e3a04001 	mov	r4, #1
+    STR R4, [R3, #0]
+  24:	e5834000 	str	r4, [r3]
+
+00000028 <ge_ij>:
+
+    ge_ij:
+    CMP R0, R2
+  28:	e1500002 	cmp	r0, r2
+    BNE end_func
+  2c:	1a000006 	bne	4c <end_func>
+    MOV R4, #2
+  30:	e3a04002 	mov	r4, #2
+    STR R4, [R3, #4]
+  34:	e5834004 	str	r4, [r3, #4]
+    LDR R4, [R3, #8]
+  38:	e5934008 	ldr	r4, [r3, #8]
+
+    CMP R4, R1
+  3c:	e1540001 	cmp	r4, r1
+    BLE end_func
+  40:	da000001 	ble	4c <end_func>
+    MOV R4, #4
+  44:	e3a04004 	mov	r4, #4
+    STR R4, [R3, #12]
+  48:	e583400c 	str	r4, [r3, #12]
+
+0000004c <end_func>:
+
+    end_func:
+    ADD R4, R0, R1
+  4c:	e0804001 	add	r4, r0, r1
+    MOV R0, R4
+  50:	e1a00004 	mov	r0, r4
+    MOV PC, LR
+  54:	e1a0f00e 	mov	pc, lr
+
+00000058 <data>:
+	...
+  60:	00000003 	.word	0x00000003
+  64:	00000000 	.word	0x00000000
+  68:	00000058 	.word	0x00000058
